@@ -3,12 +3,13 @@ import { ref, computed } from "vue";
 import type { Participant, SortField, SortOrder } from "../types";
 import SearchBar from "./SearchBar.vue";
 import BaseButton from "./BaseButton.vue";
+import Modal from "./Modal.vue";
 
 const props = defineProps<{
   participants: Participant[];
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "edit", participant: Participant): void;
   (e: "delete", participant: Participant): void;
 }>();
@@ -16,6 +17,13 @@ defineEmits<{
 const searchQuery = ref("");
 const sortField = ref<SortField>(null);
 const sortOrder = ref<SortOrder>("asc");
+const participantToDelete = ref<Participant | null>(null);
+
+const confirmDelete = () => {
+  if (!participantToDelete.value) return;
+  emit("delete", participantToDelete.value);
+  participantToDelete.value = null;
+};
 
 const handleFilter = (query: string) => {
   searchQuery.value = query;
@@ -128,7 +136,7 @@ const processedParticipants = computed(() => {
               <BaseButton
                 variant="danger"
                 class="!px-2 !py-1 text-xs"
-                @click="$emit('delete', p)"
+                @click="participantToDelete = p"
               >
                 Видалити учасника
               </BaseButton>
@@ -138,4 +146,19 @@ const processedParticipants = computed(() => {
       </table>
     </div>
   </div>
+
+  <Modal v-if="participantToDelete" @close="participantToDelete = null">
+    <template #title>Підтвердження видалення</template>
+    <template #body>
+      Ви дійсно бажаєте видалити учасника {{ participantToDelete.name }}?
+    </template>
+    <template #footer>
+      <BaseButton variant="secondary" @click="participantToDelete = null">
+        Скасувати
+      </BaseButton>
+      <BaseButton variant="danger" @click="confirmDelete">
+        Видалити
+      </BaseButton>
+    </template>
+  </Modal>
 </template>

@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUsersStore } from "../stores/users";
 import type { User } from "../types/user";
+import Modal from "../components/Modal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -13,6 +14,7 @@ const searchQuery = computed(() => (route.query.q as string) || "");
 
 const searchInput = ref(searchQuery.value);
 const selectedWinners = ref<User[]>([]);
+const userToDelete = ref<User | null>(null);
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -62,11 +64,16 @@ const removeWinner = (id: number) => {
   selectedWinners.value = selectedWinners.value.filter((w) => w.id !== id);
 };
 
-const handleDelete = async (id: number) => {
-  if (confirm("Ви дійсно бажаєте видалити користувача?")) {
-    await usersStore.deleteUser(id);
-    removeWinner(id);
-  }
+const handleDelete = (user: User) => {
+  userToDelete.value = user;
+};
+
+const confirmDelete = async () => {
+  if (!userToDelete.value) return;
+  const id = userToDelete.value.id;
+  await usersStore.deleteUser(id);
+  removeWinner(id);
+  userToDelete.value = null;
 };
 </script>
 
@@ -175,7 +182,7 @@ const handleDelete = async (id: number) => {
                 </RouterLink>
                 <button
                   class="px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-xs"
-                  @click="handleDelete(u.id)"
+                  @click="handleDelete(u)"
                 >
                   Видалити
                 </button>
@@ -206,4 +213,26 @@ const handleDelete = async (id: number) => {
       </div>
     </div>
   </div>
+
+  <Modal v-if="userToDelete" @close="userToDelete = null">
+    <template #title>Підтвердження видалення</template>
+    <template #body>
+      Ви дійсно бажаєте видалити учасника {{ userToDelete.firstName }}
+      {{ userToDelete.lastName }}?
+    </template>
+    <template #footer>
+      <button
+        class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-200"
+        @click="userToDelete = null"
+      >
+        Скасувати
+      </button>
+      <button
+        class="px-3 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
+        @click="confirmDelete"
+      >
+        Видалити
+      </button>
+    </template>
+  </Modal>
 </template>
