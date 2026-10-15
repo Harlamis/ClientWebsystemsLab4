@@ -1,11 +1,14 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
-import router from "./router";
-import "./assets/styles/main.scss";
+import { router } from "./providers/router";
+import { registerServices } from "./providers/services";
+import "@/app/styles/main.scss";
+
+// Реєструємо сервіси до ініціалізації додатку
+registerServices();
 
 const app = createApp(App);
-
 app.use(createPinia());
 app.use(router);
 
