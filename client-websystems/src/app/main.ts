@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import App from "./App.vue";
-import { router } from "./config/router";
+import { router } from "./config/router/index.js";
 import { registerServices } from "./config/services";
 import { setupUI } from "./config/ui";
 import "@/app/styles/main.scss";

@@ -21,9 +21,12 @@ const toast = useToast();
 
 const { users, total, isLoading } = storeToRefs(usersStore);
 
+const limit = 10;
 const currentPage = computed(() => Number(route.query.page) || 1);
 const searchQuery = computed(() => (route.query.q as string) || "");
 const searchInput = ref(searchQuery.value);
+
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / limit)));
 
 const columns: ColumnDef[] = [
   { field: "firstName", header: "Ім'я", sortable: true },
@@ -34,7 +37,7 @@ const columns: ColumnDef[] = [
 ];
 
 const loadData = () => {
-  usersStore.fetchUsers(currentPage.value, searchQuery.value);
+  usersStore.fetchUsers(currentPage.value, searchQuery.value, limit);
 };
 
 onMounted(loadData);
@@ -47,6 +50,11 @@ watch(searchInput, (newVal) => {
     router.push({ query: { ...route.query, q: newVal || undefined, page: 1 } });
   }, 300);
 });
+
+const goToPage = (page: number) => {
+  if (page < 1 || page > totalPages.value) return;
+  router.push({ query: { ...route.query, page } });
+};
 
 const handleDelete = (user: User) => {
   confirm.require({
@@ -73,25 +81,23 @@ const handleDelete = (user: User) => {
   <div class="flex flex-col gap-6">
     <AppConfirmDialog />
     <div
-      class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow border border-gray-100 dark:border-gray-700 flex flex-col gap-4"
+      class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 flex flex-col gap-4 transition-colors"
     >
       <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <h2 class="text-xl font-bold text-gray-800 dark:text-white">
-          Список учасників ({{ total }})
-        </h2>
+        <div>
+          <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+            Список учасників
+          </h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Всього користувачів: {{ total }}
+          </p>
+        </div>
         <div class="w-full sm:w-64">
-          <AppInput
-            v-model="searchInput"
-            placeholder="Пошук..."
-          />
+          <AppInput v-model="searchInput" placeholder="Пошук за ім'ям..." />
         </div>
       </div>
 
-      <AppTable
-        :value="users"
-        :columns="columns"
-        :loading="isLoading"
-      >
+      <AppTable :value="users" :columns="columns" :loading="isLoading">
         <template #firstName="{ data }">
           <RouterLink
             :to="`/users/${data.id}`"
@@ -101,10 +107,7 @@ const handleDelete = (user: User) => {
           </RouterLink>
         </template>
         <template #actions>
-          <Column
-            header="Дії"
-            class="text-center"
-          >
+          <Column header="Дії" class="text-center">
             <template #body="{ data }">
               <div class="flex justify-center gap-2">
                 <RouterLink :to="`/users/${data.id}/edit`">
@@ -125,6 +128,50 @@ const handleDelete = (user: User) => {
           </Column>
         </template>
       </AppTable>
+
+      <div
+        class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm"
+      >
+        <span class="text-gray-600 dark:text-gray-400">
+          Сторінка <strong>{{ currentPage }}</strong> з
+          <strong>{{ totalPages }}</strong>
+        </span>
+
+        <div class="flex items-center gap-2">
+          <AppButton
+            label="← Назад"
+            size="small"
+            severity="secondary"
+            :disabled="currentPage <= 1 || isLoading"
+            @click="goToPage(currentPage - 1)"
+          />
+
+          <div class="hidden md:flex gap-1 overflow-x-auto max-w-xs p-1">
+            <button
+              v-for="p in totalPages"
+              :key="p"
+              type="button"
+              :class="[
+                'px-3 py-1 rounded text-sm font-medium transition-colors',
+                p === currentPage
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600',
+              ]"
+              @click="goToPage(p)"
+            >
+              {{ p }}
+            </button>
+          </div>
+
+          <AppButton
+            label="Вперед →"
+            size="small"
+            severity="secondary"
+            :disabled="currentPage >= totalPages || isLoading"
+            @click="goToPage(currentPage + 1)"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
