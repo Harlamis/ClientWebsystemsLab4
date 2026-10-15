@@ -1,15 +1,19 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import App from "./App.vue";
 import { router } from "./providers/router";
 import { registerServices } from "./providers/services";
 import "@/app/styles/main.scss";
 
-// Реєструємо сервіси до ініціалізації додатку
 registerServices();
 
 const app = createApp(App);
-app.use(createPinia());
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
+app.use(pinia);
 app.use(router);
 
 app.mount("#app");
