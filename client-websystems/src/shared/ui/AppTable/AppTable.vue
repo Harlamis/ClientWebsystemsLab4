@@ -30,14 +30,16 @@ defineProps<{
       :sortable="col.sortable"
     >
       <template #body="slotProps">
-        <slot
-          :name="col.field"
-          :data="slotProps.data"
-        >
+        <slot :name="col.field" :data="slotProps.data">
           {{ slotProps.data[col.field] }}
         </slot>
       </template>
     </Column>
-    <slot name="actions" />
+
+    <Column v-if="$slots.actions" header="Дії" class="text-center">
+      <template #body="slotProps">
+        <slot name="actions" :data="slotProps.data" />
+      </template>
+    </Column>
   </DataTable>
 </template>

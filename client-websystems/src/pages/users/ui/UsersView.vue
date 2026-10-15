@@ -60,7 +60,7 @@ const goToPage = (page: number) => {
 
 const handleDelete = (user: User) => {
   confirm.require({
-    message: `Ви дійсно бажаєте видалити користувача ${user.firstName} ${user.lastName}?`,
+    message: `Ви дійсно бажаєте видалити учасника ${user.firstName} ${user.lastName}?`,
     header: "Підтвердження видалення",
     icon: "pi pi-exclamation-triangle",
     acceptLabel: "Так",
@@ -71,7 +71,7 @@ const handleDelete = (user: User) => {
       toast.add({
         severity: "info",
         summary: "Видалено",
-        detail: "Користувача видалено",
+        detail: "Учасника видалено з масиву",
         life: 3000,
       });
     },
@@ -130,26 +130,19 @@ const handleRemoveWinner = (id: number) => {
             {{ data.firstName }}
           </RouterLink>
         </template>
-        <template #actions>
-          <Column header="Дії" class="text-center">
-            <template #body="{ data }">
-              <div class="flex justify-center gap-2">
-                <RouterLink :to="`/users/${data.id}/edit`">
-                  <AppButton
-                    label="Редагувати"
-                    size="small"
-                    severity="secondary"
-                  />
-                </RouterLink>
-                <AppButton
-                  label="Видалити"
-                  size="small"
-                  severity="danger"
-                  @click="handleDelete(data)"
-                />
-              </div>
-            </template>
-          </Column>
+
+        <template #actions="{ data }">
+          <div class="flex justify-center gap-2">
+            <RouterLink :to="`/users/${data.id}/edit`">
+              <AppButton label="Редагувати" size="small" severity="secondary" />
+            </RouterLink>
+            <AppButton
+              label="Видалити"
+              size="small"
+              severity="danger"
+              @click="handleDelete(data)"
+            />
+          </div>
         </template>
       </AppTable>
 
