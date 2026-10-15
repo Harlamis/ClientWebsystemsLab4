@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useUsersStore } from "../stores/users";
-import type { User } from "../types/user";
+import { useRouter } from "vue-router";
+import { AppButton } from "@/shared/ui";
+import { useUsersStore, type User } from "@/entities/user";
 
 const props = defineProps<{ id: string }>();
+const router = useRouter();
 const usersStore = useUsersStore();
 
 const user = ref<User | null>(null);
@@ -22,45 +24,48 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100">
-    <div v-if="isLoading" class="text-center text-gray-500">
+  <div
+    class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow border border-gray-100 dark:border-gray-700 max-w-2xl mx-auto"
+  >
+    <div v-if="isLoading" class="text-center py-8 text-gray-500">
       Завантаження...
     </div>
-    <div v-else-if="error" class="text-center text-red-600">{{ error }}</div>
+    <div v-else-if="error" class="text-center py-8 text-red-600">
+      {{ error }}
+    </div>
     <div v-else-if="user" class="flex flex-col gap-6">
       <div class="flex items-center gap-4">
         <img
           :src="user.image || 'https://via.placeholder.com/100'"
-          class="w-20 h-20 rounded-full border"
+          class="w-20 h-20 rounded-full border border-gray-200 dark:border-gray-600"
+          alt="User Avatar"
         />
         <div>
-          <h1 class="text-2xl font-bold">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             {{ user.firstName }} {{ user.lastName }}
           </h1>
-          <p class="text-gray-500">@{{ user.username }}</p>
+          <p class="text-gray-500 dark:text-gray-400">@{{ user.username }}</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-b py-4">
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-b border-gray-200 dark:border-gray-700 py-4 text-gray-700 dark:text-gray-300"
+      >
         <div><strong>Email:</strong> {{ user.email }}</div>
         <div><strong>Телефон:</strong> {{ user.phone }}</div>
         <div><strong>Вік:</strong> {{ user.age }}</div>
         <div><strong>Стать:</strong> {{ user.gender }}</div>
       </div>
 
-      <div class="flex gap-4">
-        <RouterLink
-          :to="`/users/${user.id}/edit`"
-          class="px-4 py-2 bg-indigo-600 text-white rounded-md"
-        >
-          Редагувати
+      <div class="flex gap-3">
+        <RouterLink :to="`/users/${user.id}/edit`">
+          <AppButton label="Редагувати" />
         </RouterLink>
-        <RouterLink
-          to="/users"
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
-        >
-          Назад до списку
-        </RouterLink>
+        <AppButton
+          label="Назад до списку"
+          severity="secondary"
+          @click="router.push('/users')"
+        />
       </div>
     </div>
   </div>

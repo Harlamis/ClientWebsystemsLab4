@@ -1,164 +1,66 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useForm, useField } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
-import * as z from "zod";
-import { useUsersStore } from "../stores/users";
+import { useToast } from "primevue/usetoast";
+import { UserForm } from "@/features/user-form";
+import { useUsersStore, type User, type CreateUserDto } from "@/entities/user";
 
 const props = defineProps<{ id: string }>();
 const router = useRouter();
 const usersStore = useUsersStore();
+const toast = useToast();
 
+const user = ref<User | null>(null);
 const isLoading = ref(true);
-
-const schema = toTypedSchema(
-  z.object({
-    firstName: z.string().min(1, "Обов'язкове поле"),
-    lastName: z.string().min(1, "Обов'язкове поле"),
-    email: z.string().email("Некоректний email"),
-    username: z.string().min(1, "Обов'язкове поле"),
-    age: z.number().min(1).max(120),
-    gender: z.string().min(1),
-    phone: z.string().min(5, "Некоректний телефон"),
-  }),
-);
-
-const { handleSubmit, setValues } = useForm({ validationSchema: schema });
-
-const { value: firstName, errorMessage: firstNameErr } =
-  useField<string>("firstName");
-const { value: lastName, errorMessage: lastNameErr } =
-  useField<string>("lastName");
-const { value: email, errorMessage: emailErr } = useField<string>("email");
-const { value: username, errorMessage: usernameErr } =
-  useField<string>("username");
-const { value: age, errorMessage: ageErr } = useField<number>("age");
-const { value: gender, errorMessage: genderErr } = useField<string>("gender");
-const { value: phone, errorMessage: phoneErr } = useField<string>("phone");
+const isSaving = ref(false);
 
 onMounted(async () => {
   try {
-    const data = await usersStore.getUserById(Number(props.id));
-    setValues({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      username: data.username,
-      age: data.age,
-      gender: data.gender,
-      phone: data.phone,
-    });
+    user.value = await usersStore.getUserById(Number(props.id));
   } finally {
     isLoading.value = false;
   }
 });
 
-const onSubmit = handleSubmit(async (values) => {
-  await usersStore.updateUser(Number(props.id), values);
-  router.push("/users");
-});
+const handleSave = async (data: CreateUserDto) => {
+  isSaving.value = true;
+  try {
+    await usersStore.updateUser(Number(props.id), data);
+    toast.add({
+      severity: "success",
+      summary: "Успіх",
+      detail: "Дані оновлено",
+      life: 3000,
+    });
+    router.push("/users");
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Помилка",
+      detail: (err as Error).message,
+      life: 4000,
+    });
+  } finally {
+    isSaving.value = false;
+  }
+};
 </script>
 
 <template>
   <div
-    class="bg-white p-8 rounded-xl shadow-md border border-gray-100 max-w-2xl mx-auto"
+    class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow border border-gray-100 dark:border-gray-700 max-w-2xl mx-auto"
   >
-    <h1 class="text-2xl font-bold mb-6">Редагування користувача</h1>
-
-    <div v-if="isLoading" class="text-center py-4 text-gray-500">
-      Завантаження...
-    </div>
-
-    <form
+    <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+      Редагування користувача
+    </h1>
+    <div v-if="isLoading" class="text-center py-4">Завантаження...</div>
+    <UserForm
       v-else
-      class="grid grid-cols-1 md:grid-cols-2 gap-4"
-      @submit.prevent="onSubmit"
-    >
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-semibold">Ім'я</label>
-        <input
-          v-model="firstName"
-          type="text"
-          class="px-3 py-2 border rounded-md"
-        />
-        <span class="text-xs text-red-600">{{ firstNameErr }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-semibold">Прізвище</label>
-        <input
-          v-model="lastName"
-          type="text"
-          class="px-3 py-2 border rounded-md"
-        />
-        <span class="text-xs text-red-600">{{ lastNameErr }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-semibold">Email</label>
-        <input
-          v-model="email"
-          type="email"
-          class="px-3 py-2 border rounded-md"
-        />
-        <span class="text-xs text-red-600">{{ emailErr }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-semibold">Username</label>
-        <input
-          v-model="username"
-          type="text"
-          class="px-3 py-2 border rounded-md"
-        />
-        <span class="text-xs text-red-600">{{ usernameErr }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-semibold">Вік</label>
-        <input
-          v-model.number="age"
-          type="number"
-          class="px-3 py-2 border rounded-md"
-        />
-        <span class="text-xs text-red-600">{{ ageErr }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1">
-        <label class="text-sm font-semibold">Стать</label>
-        <select v-model="gender" class="px-3 py-2 border rounded-md">
-          <option value="male">male</option>
-          <option value="female">female</option>
-        </select>
-        <span class="text-xs text-red-600">{{ genderErr }}</span>
-      </div>
-
-      <div class="flex flex-col gap-1 md:col-span-2">
-        <label class="text-sm font-semibold">Телефон</label>
-        <input
-          v-model="phone"
-          type="text"
-          class="px-3 py-2 border rounded-md"
-        />
-        <span class="text-xs text-red-600">{{ phoneErr }}</span>
-      </div>
-
-      <div class="md:col-span-2 flex gap-3 mt-4">
-        <button
-          type="submit"
-          class="px-4 py-2 bg-indigo-600 text-white rounded-md"
-        >
-          Зберегти
-        </button>
-        <button
-          type="button"
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
-          @click="router.push('/users')"
-        >
-          Скасувати
-        </button>
-      </div>
-    </form>
+      :initial-data="user"
+      is-editing
+      :loading="isSaving"
+      @submit="handleSave"
+      @cancel="router.push('/users')"
+    />
   </div>
 </template>
