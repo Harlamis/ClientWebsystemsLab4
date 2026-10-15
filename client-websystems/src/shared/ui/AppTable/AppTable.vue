@@ -30,7 +30,10 @@ defineProps<{
       :sortable="col.sortable"
     >
       <template #body="slotProps">
-        <slot :name="col.field" :data="slotProps.data">
+        <slot
+          :name="col.field"
+          :data="slotProps.data"
+        >
           {{ slotProps.data[col.field] }}
         </slot>
       </template>

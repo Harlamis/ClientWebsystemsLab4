@@ -54,7 +54,10 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-4 w-full" @submit.prevent="onSubmit">
+  <form
+    class="flex flex-col gap-4 w-full"
+    @submit.prevent="onSubmit"
+  >
     <AppInput
       id="username"
       v-model="username"

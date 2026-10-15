@@ -80,11 +80,18 @@ const handleDelete = (user: User) => {
           Список учасників ({{ total }})
         </h2>
         <div class="w-full sm:w-64">
-          <AppInput v-model="searchInput" placeholder="Пошук..." />
+          <AppInput
+            v-model="searchInput"
+            placeholder="Пошук..."
+          />
         </div>
       </div>
 
-      <AppTable :value="users" :columns="columns" :loading="isLoading">
+      <AppTable
+        :value="users"
+        :columns="columns"
+        :loading="isLoading"
+      >
         <template #firstName="{ data }">
           <RouterLink
             :to="`/users/${data.id}`"
@@ -94,7 +101,10 @@ const handleDelete = (user: User) => {
           </RouterLink>
         </template>
         <template #actions>
-          <Column header="Дії" class="text-center">
+          <Column
+            header="Дії"
+            class="text-center"
+          >
             <template #body="{ data }">
               <div class="flex justify-center gap-2">
                 <RouterLink :to="`/users/${data.id}/edit`">

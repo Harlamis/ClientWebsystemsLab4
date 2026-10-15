@@ -37,7 +37,10 @@ defineEmits<{
         $emit('update:modelValue', ($event.target as HTMLInputElement).value)
       "
     />
-    <span v-if="error" class="text-xs text-red-500 min-h-[16px]">
+    <span
+      v-if="error"
+      class="text-xs text-red-500 min-h-[16px]"
+    >
       {{ error }}
     </span>
   </div>

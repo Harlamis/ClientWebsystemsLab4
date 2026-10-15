@@ -68,7 +68,9 @@ const processedParticipants = computed(() => {
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <h2 class="text-xl font-bold text-gray-800">Список учасників</h2>
+      <h2 class="text-xl font-bold text-gray-800">
+        Список учасників
+      </h2>
       <SearchBar @filter-by-name="handleFilter" />
     </div>
 
@@ -87,11 +89,18 @@ const processedParticipants = computed(() => {
                 <span v-if="sortField === 'name'">{{
                   sortOrder === "asc" ? "▲" : "▼"
                 }}</span>
-                <span v-else class="text-gray-300">⇅</span>
+                <span
+                  v-else
+                  class="text-gray-300"
+                >⇅</span>
               </div>
             </th>
-            <th class="py-3 px-4">Email</th>
-            <th class="py-3 px-4">Телефон</th>
+            <th class="py-3 px-4">
+              Email
+            </th>
+            <th class="py-3 px-4">
+              Телефон
+            </th>
             <th
               class="py-3 px-4 cursor-pointer select-none"
               @click="toggleSort('dateOfBirth')"
@@ -101,16 +110,26 @@ const processedParticipants = computed(() => {
                 <span v-if="sortField === 'dateOfBirth'">{{
                   sortOrder === "asc" ? "▲" : "▼"
                 }}</span>
-                <span v-else class="text-gray-300">⇅</span>
+                <span
+                  v-else
+                  class="text-gray-300"
+                >⇅</span>
               </div>
             </th>
-            <th class="py-3 px-4 text-center">Редагування</th>
-            <th class="py-3 px-4 text-center">Видалення</th>
+            <th class="py-3 px-4 text-center">
+              Редагування
+            </th>
+            <th class="py-3 px-4 text-center">
+              Видалення
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 text-sm">
           <tr v-if="processedParticipants.length === 0">
-            <td colspan="6" class="py-6 text-center text-gray-400">
+            <td
+              colspan="6"
+              class="py-6 text-center text-gray-400"
+            >
               Учасників не знайдено
             </td>
           </tr>
@@ -119,10 +138,18 @@ const processedParticipants = computed(() => {
             :key="p.id"
             class="hover:bg-gray-50 transition-colors"
           >
-            <td class="py-3 px-4 font-medium text-gray-900">{{ p.name }}</td>
-            <td class="py-3 px-4 text-gray-600">{{ p.email }}</td>
-            <td class="py-3 px-4 text-gray-600">{{ p.phone }}</td>
-            <td class="py-3 px-4 text-gray-600">{{ p.dateOfBirth }}</td>
+            <td class="py-3 px-4 font-medium text-gray-900">
+              {{ p.name }}
+            </td>
+            <td class="py-3 px-4 text-gray-600">
+              {{ p.email }}
+            </td>
+            <td class="py-3 px-4 text-gray-600">
+              {{ p.phone }}
+            </td>
+            <td class="py-3 px-4 text-gray-600">
+              {{ p.dateOfBirth }}
+            </td>
             <td class="py-3 px-4 text-center">
               <BaseButton
                 variant="secondary"
@@ -147,16 +174,27 @@ const processedParticipants = computed(() => {
     </div>
   </div>
 
-  <Modal v-if="participantToDelete" @close="participantToDelete = null">
-    <template #title>Підтвердження видалення</template>
+  <Modal
+    v-if="participantToDelete"
+    @close="participantToDelete = null"
+  >
+    <template #title>
+      Підтвердження видалення
+    </template>
     <template #body>
       Ви дійсно бажаєте видалити учасника {{ participantToDelete.name }}?
     </template>
     <template #footer>
-      <BaseButton variant="secondary" @click="participantToDelete = null">
+      <BaseButton
+        variant="secondary"
+        @click="participantToDelete = null"
+      >
         Скасувати
       </BaseButton>
-      <BaseButton variant="danger" @click="confirmDelete">
+      <BaseButton
+        variant="danger"
+        @click="confirmDelete"
+      >
         Видалити
       </BaseButton>
     </template>

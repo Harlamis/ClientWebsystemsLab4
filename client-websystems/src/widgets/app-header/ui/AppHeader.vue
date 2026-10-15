@@ -23,28 +23,32 @@ const handleLogout = () => {
         <RouterLink
           to="/"
           class="font-bold text-xl text-indigo-600 dark:text-indigo-400"
-          >🎰 VueLottery</RouterLink
         >
+          🎰 VueLottery
+        </RouterLink>
         <nav class="flex gap-4">
           <RouterLink
             to="/"
             class="text-gray-700 dark:text-gray-200 hover:text-indigo-600"
             active-class="font-bold text-indigo-600"
-            >Home</RouterLink
           >
+            Home
+          </RouterLink>
           <RouterLink
             to="/about"
             class="text-gray-700 dark:text-gray-200 hover:text-indigo-600"
             active-class="font-bold text-indigo-600"
-            >About author</RouterLink
           >
+            About author
+          </RouterLink>
           <RouterLink
             v-if="sessionStore.isAuthenticated"
             to="/users"
             class="text-gray-700 dark:text-gray-200 hover:text-indigo-600"
             active-class="font-bold text-indigo-600"
-            >Users</RouterLink
           >
+            Users
+          </RouterLink>
         </nav>
       </div>
 
@@ -62,7 +66,12 @@ const handleLogout = () => {
           :label="`Logout (${sessionStore.user?.username})`"
           @click="handleLogout"
         />
-        <RouterLink v-else to="/login"><AppButton label="Login" /></RouterLink>
+        <RouterLink
+          v-else
+          to="/login"
+        >
+          <AppButton label="Login" />
+        </RouterLink>
       </div>
     </div>
   </header>

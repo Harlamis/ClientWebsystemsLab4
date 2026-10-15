@@ -22,16 +22,25 @@ defineEmits<{
       <h2 class="text-xl font-bold text-gray-800">
         Переможці ({{ winners.length }}/3)
       </h2>
-      <BaseButton :disabled="!canSelectWinner" @click="$emit('select-winner')">
+      <BaseButton
+        :disabled="!canSelectWinner"
+        @click="$emit('select-winner')"
+      >
         New winner
       </BaseButton>
     </div>
 
-    <div v-if="winners.length === 0" class="text-center py-6 text-gray-400">
+    <div
+      v-if="winners.length === 0"
+      class="text-center py-6 text-gray-400"
+    >
       Переможців ще не обрано
     </div>
 
-    <div v-else class="flex flex-col gap-3">
+    <div
+      v-else
+      class="flex flex-col gap-3"
+    >
       <WinnerCard
         v-for="winner in winners"
         :key="winner.id"

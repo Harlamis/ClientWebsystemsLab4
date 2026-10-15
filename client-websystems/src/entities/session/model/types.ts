@@ -1,5 +1,3 @@
-import type { User } from "@/entities/user";
-
 export interface LoginCredentials {
   username: string;
   password?: string;
@@ -22,4 +20,14 @@ export interface RefreshResponse {
   refreshToken: string;
 }
 
-export type AuthUser = Omit<User, "password">;
+export interface AuthUser {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  image: string;
+  age?: number;
+  phone?: string;
+}

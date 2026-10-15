@@ -1,1 +1,1 @@
-export { default as UsersPage } from "./UsersView.vue";
+export { default as UsersPage } from "./ui/UsersView.vue";

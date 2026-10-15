@@ -15,7 +15,10 @@ defineEmits<{
 
 <template>
   <div class="flex flex-col gap-1 w-full">
-    <label :for="id" class="text-sm font-semibold text-gray-700">
+    <label
+      :for="id"
+      class="text-sm font-semibold text-gray-700"
+    >
       {{ label }}
     </label>
     <input
@@ -30,8 +33,11 @@ defineEmits<{
           : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
       ]"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-    />
-    <span v-if="error" class="text-xs text-red-600 min-h-[16px]">
+    >
+    <span
+      v-if="error"
+      class="text-xs text-red-600 min-h-[16px]"
+    >
       {{ error }}
     </span>
   </div>

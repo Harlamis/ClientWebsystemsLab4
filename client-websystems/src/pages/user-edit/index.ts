@@ -1,1 +1,1 @@
-export { default as UserEditPage } from "./UserEditView.vue";
+export { default as UserEditPage } from "./ui/UserEditView.vue";

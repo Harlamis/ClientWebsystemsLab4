@@ -1,1 +1,1 @@
-export { default as NotFoundPage } from "./NotFoundView.vue";
+export { default as NotFoundPage } from "./ui/NotFoundView.vue";

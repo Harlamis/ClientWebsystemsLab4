@@ -18,8 +18,12 @@ defineEmits<{
     <div class="flex items-center gap-3">
       <span class="text-2xl">🏆</span>
       <div>
-        <p class="font-bold text-gray-800">{{ winner.name }}</p>
-        <p class="text-xs text-gray-500">{{ winner.email }}</p>
+        <p class="font-bold text-gray-800">
+          {{ winner.name }}
+        </p>
+        <p class="text-xs text-gray-500">
+          {{ winner.email }}
+        </p>
       </div>
     </div>
     <BaseButton

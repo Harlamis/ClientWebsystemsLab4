@@ -115,7 +115,10 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
+  <form
+    class="flex flex-col gap-4"
+    @submit.prevent="handleSubmit"
+  >
     <BaseInput
       id="name"
       v-model="formData.name"
@@ -146,7 +149,10 @@ const handleSubmit = () => {
       label="Дата народження"
       :error="errors.dateOfBirth"
     />
-    <BaseButton type="submit" class="mt-2 w-full">
+    <BaseButton
+      type="submit"
+      class="mt-2 w-full"
+    >
       {{ isEditing ? "Оновити дані" : "Save" }}
     </BaseButton>
   </form>

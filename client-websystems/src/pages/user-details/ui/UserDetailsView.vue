@@ -27,24 +27,35 @@ onMounted(async () => {
   <div
     class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow border border-gray-100 dark:border-gray-700 max-w-2xl mx-auto"
   >
-    <div v-if="isLoading" class="text-center py-8 text-gray-500">
+    <div
+      v-if="isLoading"
+      class="text-center py-8 text-gray-500"
+    >
       Завантаження...
     </div>
-    <div v-else-if="error" class="text-center py-8 text-red-600">
+    <div
+      v-else-if="error"
+      class="text-center py-8 text-red-600"
+    >
       {{ error }}
     </div>
-    <div v-else-if="user" class="flex flex-col gap-6">
+    <div
+      v-else-if="user"
+      class="flex flex-col gap-6"
+    >
       <div class="flex items-center gap-4">
         <img
           :src="user.image || 'https://via.placeholder.com/100'"
           class="w-20 h-20 rounded-full border border-gray-200 dark:border-gray-600"
           alt="User Avatar"
-        />
+        >
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             {{ user.firstName }} {{ user.lastName }}
           </h1>
-          <p class="text-gray-500 dark:text-gray-400">@{{ user.username }}</p>
+          <p class="text-gray-500 dark:text-gray-400">
+            @{{ user.username }}
+          </p>
         </div>
       </div>
 

@@ -53,7 +53,12 @@ const handleSave = async (data: CreateUserDto) => {
     <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
       Редагування користувача
     </h1>
-    <div v-if="isLoading" class="text-center py-4">Завантаження...</div>
+    <div
+      v-if="isLoading"
+      class="text-center py-4"
+    >
+      Завантаження...
+    </div>
     <UserForm
       v-else
       :initial-data="user"

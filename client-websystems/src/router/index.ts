@@ -9,13 +9,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "home",
-    component: () => import("../pages/home/HomeView.vue"),
+    component: () => import("../pages/home/ui/HomeView.vue"),
     meta: { title: "Головна - Vue Lottery" },
   },
   {
     path: "/about",
     name: "about",
-    component: () => import("../pages/about/AboutView.vue"),
+    component: () => import("../pages/about/ui/AboutView.vue"),
     meta: { title: "Про автора - Vue Lottery" },
   },
   {
@@ -47,7 +47,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/:pathMatch(.*)*",
     name: "not-found",
-    component: () => import("../pages/not-found/NotFoundView.vue"),
+    component: () => import("../pages/not-found/ui/NotFoundView.vue"),
     meta: { title: "404 - Сторінку не знайдено" },
   },
 ];
