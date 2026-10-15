@@ -1,4 +1,5 @@
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = (import.meta as ImportMeta & { env: { VITE_API_URL: string } })
+  .env.VITE_API_URL;
 
 export async function http<T>(
   path: string,
