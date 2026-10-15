@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { ServiceProvider } from "@/shared/api";
 import type { UserService } from "../api/user.service";
@@ -10,7 +10,24 @@ export const useUsersStore = defineStore("users", () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  const hasUsers = computed(() => users.value.length > 0);
+  const winners = ref<User[]>([]);
+  const lastDeletedId = ref<number | null>(null);
+
+  watch(lastDeletedId, (deletedId) => {
+    if (deletedId !== null) {
+      winners.value = winners.value.filter((w) => w.id !== deletedId);
+      lastDeletedId.value = null;
+    }
+  });
+
+  const availableCandidates = computed(() => {
+    const winnerIds = new Set(winners.value.map((w) => w.id));
+    return users.value.filter((u) => !winnerIds.has(u.id));
+  });
+
+  const canSelectWinner = computed(() => {
+    return winners.value.length < 3 && availableCandidates.value.length > 0;
+  });
 
   const userService = () => ServiceProvider.get<UserService>("users");
 
@@ -53,6 +70,13 @@ export const useUsersStore = defineStore("users", () => {
     if (index !== -1) {
       users.value[index] = { ...users.value[index], ...updated };
     }
+    const winnerIndex = winners.value.findIndex((w) => w.id === id);
+    if (winnerIndex !== -1) {
+      winners.value[winnerIndex] = {
+        ...winners.value[winnerIndex],
+        ...updated,
+      };
+    }
     return updated;
   }
 
@@ -60,6 +84,18 @@ export const useUsersStore = defineStore("users", () => {
     await userService().delete(id);
     users.value = users.value.filter((u) => u.id !== id);
     total.value--;
+    lastDeletedId.value = id;
+  }
+
+  function selectRandomWinner(): void {
+    if (!canSelectWinner.value) return;
+    const candidates = availableCandidates.value;
+    const randomIndex = Math.floor(Math.random() * candidates.length);
+    winners.value.push(candidates[randomIndex]);
+  }
+
+  function removeWinner(id: number): void {
+    winners.value = winners.value.filter((w) => w.id !== id);
   }
 
   return {
@@ -67,11 +103,14 @@ export const useUsersStore = defineStore("users", () => {
     total,
     isLoading,
     error,
-    hasUsers,
+    winners,
+    canSelectWinner,
     fetchUsers,
     getUserById,
     createUser,
     updateUser,
     removeUser,
+    selectRandomWinner,
+    removeWinner,
   };
 });

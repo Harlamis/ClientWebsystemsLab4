@@ -11,6 +11,7 @@ import {
   AppConfirmDialog,
   type ColumnDef,
 } from "@/shared/ui";
+import { WinnersList } from "@/widgets/winners-list";
 import { useUsersStore, type User } from "@/entities/user";
 
 const route = useRoute();
@@ -19,7 +20,8 @@ const usersStore = useUsersStore();
 const confirm = useConfirm();
 const toast = useToast();
 
-const { users, total, isLoading } = storeToRefs(usersStore);
+const { users, total, isLoading, winners, canSelectWinner } =
+  storeToRefs(usersStore);
 
 const limit = 10;
 const currentPage = computed(() => Number(route.query.page) || 1);
@@ -75,11 +77,33 @@ const handleDelete = (user: User) => {
     },
   });
 };
+
+const handleSelectWinner = () => {
+  usersStore.selectRandomWinner();
+  toast.add({
+    severity: "success",
+    summary: "Переможець обраний!",
+    detail: "Новий переможець доданий у блок",
+    life: 3000,
+  });
+};
+
+const handleRemoveWinner = (id: number) => {
+  usersStore.removeWinner(id);
+};
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
     <AppConfirmDialog />
+
+    <WinnersList
+      :winners="winners"
+      :can-select-winner="canSelectWinner"
+      @select-winner="handleSelectWinner"
+      @remove-winner="handleRemoveWinner"
+    />
+
     <div
       class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 flex flex-col gap-4 transition-colors"
     >
